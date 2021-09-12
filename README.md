@@ -10,9 +10,9 @@ This project is currently under-development so there are lot of bugs to resolve 
 I have tried to mimic as many features of real instagram as possible in this app but still there are lot of features yet to be added and fixed.
 
 ## Technologies you need
---> If you know flutter and dart you are good to go but if you don't know and have other programming languages background or no programming background you can still work on it by following some [tutorials](https://www.youtube.com/watch?v=FTju8w4zEno&list=PLBxWkM8PLHcr2vkdY2n9rIcxjZ9Th3Us7) and [docs](https://flutter.dev/docs).
+- If you know flutter and dart you are good to go but if you don't know and have other programming languages background or no programming background you can still work on it by following some [tutorials](https://www.youtube.com/watch?v=FTju8w4zEno&list=PLBxWkM8PLHcr2vkdY2n9rIcxjZ9Th3Us7) and [docs](https://flutter.dev/docs).
 
---> Working with firebase database and storage is not a big deal follow the official [docs](https://firebase.flutter.dev/docs/firestore/usage/).
+- Working with firebase database and storage is not a big deal follow the official [docs](https://firebase.flutter.dev/docs/firestore/usage/).
 
 ## Getting started
 In order to get started you need to have few setups ready.
