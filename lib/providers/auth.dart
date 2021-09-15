@@ -55,4 +55,12 @@ class AuthFunctions{
     }
   }
 
+  signoutUser() async{
+    try{
+     await  _auth.signOut();
+    }catch(e){
+      print(e);
+    }
+  }
+
 }

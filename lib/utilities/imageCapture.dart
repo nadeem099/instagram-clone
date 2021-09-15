@@ -81,7 +81,7 @@ class _ImageCaptureState extends State<ImageCapture> {
           child: Image.file(
             _convertedFile as File, 
             height: 500, 
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width ,
           )
         ),
         Row(
@@ -90,24 +90,26 @@ class _ImageCaptureState extends State<ImageCapture> {
             imageEditingButton(Icon(Icons.refresh), context, clear)
           ],
         ),
-        GestureDetector(
-          onTap: (){
-            // startUpload(_convertedFile);
-            Navigator.of(context).push(MaterialPageRoute(builder: (context){
-              return PostPage(postFile: _convertedFile,);
-            }));
-          }, 
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width * 0.95,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5) ,
-              color: Colors.blue.shade500
-            ),
-            child: Text('Post', style: TextStyle(color: Colors.white),),
-          )
-        )
+        Flexible(
+          child: GestureDetector(
+            onTap: (){
+              // startUpload(_convertedFile);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                return PostPage(postFile: _convertedFile,);
+              }));
+            }, 
+            child: Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.95,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5) ,
+                color: Colors.blue.shade500
+              ),
+              child: Text('Post', style: TextStyle(color: Colors.white),),
+            )
+          ),
+        ),
       ],
     );
   }

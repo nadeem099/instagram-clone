@@ -21,32 +21,46 @@ class _SigninState extends State<Signin> {
   TextEditingController passwordEditingController = new TextEditingController();
   DatabaseFunctions databaseFunctions = new DatabaseFunctions();
   bool isLoading = false;
+  bool isAuthenticated = true;
 
 
 signInUser() async{
     setState(() {
       isLoading = true;
     });
-    authFunctions.signinUserWithEmailAndPassword(emailEditingController.text, passwordEditingController.text);
-    await databaseFunctions.getDocumentByEmailId(emailEditingController.text)
-    .then((val){
-      Constant.userID = val.docs[0]['userid'];
-      Constant.userName = val.docs[0]['userName'];
-      print(Constant.userID);
-      print(Constant.userName);
-    });
-    SharedPreferenceFunctions.saveUserLoggedInSharedPreference(true);
-    // SharedPreferenceFunctions.saveUserIdSharedPreference('User id saved to shared prefernce ${userid}');
-    SharedPreferenceFunctions.saveUserNameSharedPreference(usernameEditingController.text);
-    SharedPreferenceFunctions.saveUserEmailIdSharedPreference(emailEditingController.text);
-    Navigator.pushReplacement(
-    context, 
-    MaterialPageRoute(
-      builder: (context){
-        return AppContainer(0);
+    var user = authFunctions.signinUserWithEmailAndPassword(emailEditingController.text, passwordEditingController.text)
+    .then((val) async{
+      if(val != null){
+        setState(() {
+          isAuthenticated = true;
+        });
+        await databaseFunctions.getDocumentByEmailId(emailEditingController.text)
+          .then((val){
+            Constant.userID = val.docs[0]['userid'];
+            Constant.userName = val.docs[0]['userName'];
+            // print(Constant.userID);
+            // print(Constant.userName);
+          });
+          SharedPreferenceFunctions.saveUserLoggedInSharedPreference(true);
+          SharedPreferenceFunctions.saveUserIdSharedPreference(Constant.userID);
+          SharedPreferenceFunctions.saveUserNameSharedPreference(Constant.userName);
+          SharedPreferenceFunctions.saveUserEmailIdSharedPreference(emailEditingController.text);
+          Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(
+            builder: (context){
+              return AppContainer(0, false);
+            }
+          )
+        );
       }
-    )
-  );
+    else{
+      setState(() {
+        isAuthenticated = false;
+        isLoading = false;
+      });
+      }
+    });
 }
 
   @override
@@ -72,6 +86,9 @@ signInUser() async{
                 SizedBox(height: 160),
                 Image.asset('assets/images/logo.png', height: 70, color: currentTheme.currentTheme == ThemeMode.dark ? Colors.white : Colors.black,),
                 SizedBox(height: 25),
+                !isAuthenticated ? Center(child: Container(padding: EdgeInsets.all(5), color: Colors.red, child: Text('Invalid Credentials',style: TextStyle(color: Colors.white,),)),
+                ) : Container(),
+                SizedBox(height: 20),
                 Container(
                     width: MediaQuery.of(context).size.width - 40,
                     height: 50,
@@ -92,6 +109,7 @@ signInUser() async{
                   ),
                 ),
                 SizedBox(height: 20),
+                isLoading ? loadingContainer(context) : 
                 GestureDetector(
                   onTap: (){signInUser();},
                   child: buttonContainer(context, 'Log In')

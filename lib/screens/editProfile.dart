@@ -64,14 +64,16 @@ class _EditProfileState extends State<EditProfile> {
       'name': nameEditingController.text,
       'userName': usernameEditingController.text,
       'website': websiteEditingController.text,
-      'bio': bioEditingController.text
+      'bio': bioEditingController.text,
+      'nameSearchParams' : createSearchParams(nameEditingController.text),
+      'usernameSearchParams' : createSearchParams(usernameEditingController.text)
       });
       print('user profile is update');
       Constant.userName = usernameEditingController.text;
       print(Constant.userName);
       Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context){
-          return AppContainer(4);
+          return AppContainer(4, false);
         }
       ));
     }

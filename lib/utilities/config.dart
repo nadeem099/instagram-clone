@@ -25,7 +25,15 @@ var signup = new Signup(toggle: (){});
 
 Color themeTernaryOperator = currentTheme.currentTheme == ThemeMode.dark ? Colors.white : Colors.black;
 
-
+List<String> createSearchParams(data){
+  List<String> searchList = [];
+  String temp = '';
+  for (var i = 0; i < data.length; i++) {
+    temp = temp + data[i];
+    searchList.add(temp);
+  }
+  return searchList;
+}  
 
 
 

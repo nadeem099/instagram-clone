@@ -8,6 +8,8 @@ import 'package:instagram_clone/screens/profile.dart';
 import 'package:instagram_clone/screens/signin.dart';
 import 'package:instagram_clone/screens/signup.dart';
 import 'package:instagram_clone/utilities/config.dart';
+import 'package:instagram_clone/utilities/constant.dart';
+import 'package:instagram_clone/utilities/sharedPrefrenceFunctions.dart';
 import 'package:instagram_clone/utilities/themes/themes.dart';
 import 'package:instagram_clone/utilities/toggleSignUpAndSignIn.dart';
 
@@ -25,12 +27,40 @@ class RootApp extends StatefulWidget {
 }
 
 class _RootAppState extends State<RootApp> {
+  bool isLoggedIn = false; 
   @override
   void initState() {
     super.initState();
     currentTheme.addListener(() {
       setState(() {});
     });
+    getUserLoggedInStatus();
+  }
+
+  getUserLoggedInStatus() async{
+    //getting user's logged in status
+    await SharedPreferenceFunctions.getuserLoggInSharedPreference().then((value){
+      setState(() {
+        isLoggedIn = value;
+      });
+    });
+    if(isLoggedIn){
+      await SharedPreferenceFunctions.getuserUserNameSharedPreference().then((value){
+        setState(() {
+          Constant.userName = value;
+        });
+      });
+    if(isLoggedIn){
+      await SharedPreferenceFunctions.getuserUserIdSharedPreference().then((value){
+        setState(() {
+          Constant.userID = value;
+        });
+      });
+    }
+    }
+    print('User login status: $isLoggedIn');
+    print(Constant.userName);
+    print(Constant.userID);
   }
   @override
   Widget build(BuildContext context) {
@@ -40,7 +70,9 @@ class _RootAppState extends State<RootApp> {
       darkTheme: CustomTheme.darkTheme,
       themeMode: currentTheme.currentTheme,
       debugShowCheckedModeBanner: false,
-      home: ToggleSignupAndSignIn(),
+      home: isLoggedIn ? 
+      AppContainer(0, false) :
+      ToggleSignupAndSignIn() 
     );
   }
 }

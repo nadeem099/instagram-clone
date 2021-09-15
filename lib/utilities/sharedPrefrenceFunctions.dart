@@ -49,7 +49,7 @@ class SharedPreferenceFunctions{
 
   static Future<String> getuserUserNameSharedPreference() async{
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    return _pref.getString(sharedPreferenceUsernameKey) == null ? "" : _pref.getString(sharedPreferenceLoggedInKey) as String;
+    return _pref.getString(sharedPreferenceUsernameKey) == null ? "" : _pref.getString(sharedPreferenceUsernameKey) as String;
   }
 
   static Future<String> getuserEmailIdSharedPreference() async{

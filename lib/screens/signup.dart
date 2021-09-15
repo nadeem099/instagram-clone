@@ -28,7 +28,7 @@ class _SignupState extends State<Signup> {
   Map<String, dynamic> userMap= {};
   String userid = uid.v4();
   bool isLoading = false;
-  
+
 
 signupForNewUser() async{
   print(signup.doesUserNameExistStatus);
@@ -49,22 +49,24 @@ signupForNewUser() async{
     userMap = {
       "userid" : userid, 
       "userName" : usernameEditingController.text,
+      "name" : '',
+      "bio" : '',
       "email" : emailEditingController.text,
+      "usernameSearchParams" : createSearchParams(usernameEditingController.text)
     };
     db.uploadUser(userMap);
     authFunctions.signupUserWithEmailAndPassword(emailEditingController.text, passwordEditingController.text);
     SharedPreferenceFunctions.saveUserLoggedInSharedPreference(true);
-    // SharedPreferenceFunctions.saveUserIdSharedPreference('User id saved to shared prefernce ${userid}');
-    // print(userid);
     SharedPreferenceFunctions.saveUserNameSharedPreference(usernameEditingController.text);
     SharedPreferenceFunctions.saveUserEmailIdSharedPreference(emailEditingController.text);
     Constant.userName = usernameEditingController.text;
     Constant.userID = userid;
+    SharedPreferenceFunctions.saveUserIdSharedPreference(Constant.userID);
     Navigator.pushReplacement(
     context, 
     MaterialPageRoute(
       builder: (context){
-        return AppContainer(0);
+        return AppContainer(0, false);
       }
     )
   );
@@ -74,9 +76,7 @@ signupForNewUser() async{
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Center(child: CircularProgressIndicator(color: currentTheme.currentTheme == ThemeMode.dark? Colors.white : Colors.black,)):
-      Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           child: Container(
@@ -138,11 +138,13 @@ signupForNewUser() async{
                         ),
                       ),
                       SizedBox(height: 20),
+                      isLoading ?
+                      loadingContainer(context) :
                       GestureDetector(
                         onTap: (){
                           signupForNewUser();
                         },
-                        child: buttonContainer(context, 'Sing Up'),
+                        child: buttonContainer(context, 'Sign Up'),
                       ),
                     ]
                   )

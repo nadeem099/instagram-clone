@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instagram_clone/providers/auth.dart';
 import 'package:instagram_clone/utilities/config.dart';
 import 'package:instagram_clone/utilities/constant.dart';
+import 'package:instagram_clone/utilities/sharedPrefrenceFunctions.dart';
+import 'package:instagram_clone/utilities/toggleSignupAndSignin.dart';
 
-PreferredSizeWidget appBarMain(){
+PreferredSizeWidget appBarMain(context){
   return AppBar(
     backgroundColor: currentTheme.currentTheme == ThemeMode.dark ? Color(0xff1C1C1D) : Color(0xffF3F4F8),
     elevation: 0,
@@ -27,6 +30,21 @@ PreferredSizeWidget appBarMain(){
     IconButton(
       onPressed: () => currentTheme.toggleTheme(), 
       icon: const Icon(Icons.brightness_4)
+    ),
+    IconButton(
+      onPressed: ()async{
+        await AuthFunctions().signoutUser();
+        Constant.userID = '';
+        Constant.userName = '';
+        SharedPreferenceFunctions.saveUserLoggedInSharedPreference(false);
+        SharedPreferenceFunctions.saveUserEmailIdSharedPreference('');
+        SharedPreferenceFunctions.saveUserIdSharedPreference('');
+        SharedPreferenceFunctions.saveUserNameSharedPreference('');
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+          return ToggleSignupAndSignIn();
+        }));
+      },
+      icon: const Icon(Icons.logout)
     ),
     IconButton(
       onPressed: (){},
@@ -55,17 +73,6 @@ PreferredSizeWidget ThemeChangerAppBar(){
 }
 
 
-PreferredSizeWidget searchAppBar(){
-  return AppBar(
-    backgroundColor: currentTheme.currentTheme == ThemeMode.dark ? Color(0xff1C1C1D) : Color(0xffF3F4F8),
-    elevation: 0,
-    title: Text(
-      'Search',
-      style: TextStyle(color: currentTheme.currentTheme == ThemeMode.dark ? Colors.white : Colors.black),
-    ),
-  );
-}
-
 PreferredSizeWidget postAppBar(){
   return AppBar(
     backgroundColor: currentTheme.currentTheme == ThemeMode.dark ? Color(0xff1C1C1D) : Color(0xffF3F4F8),
@@ -88,7 +95,8 @@ PreferredSizeWidget activityAppBar(){
   );
 }
 
-PreferredSizeWidget profileAppBar(){
+PreferredSizeWidget profileAppBar({username = ''}){
+  print(username);
   return AppBar(
     backgroundColor: currentTheme.currentTheme == ThemeMode.dark ? Color(0xff1C1C1D) : Color(0xffF3F4F8),
     elevation: 0,
@@ -96,7 +104,7 @@ PreferredSizeWidget profileAppBar(){
       padding: EdgeInsets.only(left: 5),
       child: Center(
         child: Text(
-          Constant.userName,
+          username != '' ? username : Constant.userName,
           style: TextStyle(
             color:  currentTheme.currentTheme == ThemeMode.dark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,

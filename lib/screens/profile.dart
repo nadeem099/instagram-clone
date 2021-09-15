@@ -20,6 +20,7 @@ class UserProfileState extends State<UserProfile> {
   bool arePhotosPresent = false;
   bool isProfileDataLoaded = false;
   bool isGridView = true;
+  bool isImageLoading = false;
   DatabaseFunctions databaseFunctions = new DatabaseFunctions();
 
 
@@ -53,6 +54,9 @@ class UserProfileState extends State<UserProfile> {
     return StreamBuilder(
       stream: profilepostStream,
       builder: (context, AsyncSnapshot snapshot){
+        if(snapshot.data == null){
+          return CircularProgressIndicator();
+        }
         if(snapshot.hasData && snapshot.data.docs.length != 0){
           arePhotosPresent = true;
           return isGridView ?

@@ -16,6 +16,19 @@ class DatabaseFunctions{
     .get();
   }
 
+  getUserByusernameSearch(String keyword) async{
+    return await firestore.collection('users')
+    .where('usernameSearchParams', arrayContains: keyword)
+    .get();
+  }
+
+  getUserBynameSearch(String keyword) async{
+    return await firestore.collection('users')
+    .where('nameSearchParam', arrayContains: keyword)
+    .get();
+  }
+
+
   uploadUser(Map<String, dynamic> userMap) async{
     await firestore.collection('users').doc(userMap["userid"]).set(userMap)
     .catchError((err) => print(err));
@@ -29,6 +42,13 @@ class DatabaseFunctions{
     return await firestore.collection('posts')
     .orderBy("timeStamp", descending: true)
     .where('userId', isEqualTo: Constant.userID)
+    .snapshots();
+  }
+
+  getPostsOfSearchedUser(String userId) async{
+    return await firestore.collection('posts')
+    .orderBy('timeStamp', descending:  true)
+    .where('userId', isEqualTo: userId)
     .snapshots();
   }
 

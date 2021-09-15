@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/screens/signup.dart';
 import 'package:instagram_clone/utilities/config.dart';
 
@@ -39,4 +40,17 @@ Widget buttonContainer(BuildContext context, String buttonName){
           ),
           child: Text(buttonName, style: TextStyle(color: Colors.white),),
         );
+}
+
+Widget loadingContainer(BuildContext context){
+  return Container(
+          width: MediaQuery.of(context).size.width - 40,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.blue.shade300,
+          ),
+          child: CircularProgressIndicator(color: Colors.white,)
+  );
 }
