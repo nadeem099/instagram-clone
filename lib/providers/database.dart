@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:instagram_clone/utilities/constant.dart';
 
 class DatabaseFunctions{
@@ -32,6 +33,51 @@ class DatabaseFunctions{
   uploadUser(Map<String, dynamic> userMap) async{
     await firestore.collection('users').doc(userMap["userid"]).set(userMap)
     .catchError((err) => print(err));
+  }
+
+  //using this function to handle exception while signinup
+  updateFollowerOnSignup(signedupUser)async{
+    await firestore.collection('users').doc(signedupUser)
+    .collection('followers').doc(signedupUser).set({'userid' : signedupUser});
+  }
+
+  //using this function to handle exception while signinup
+  updateFollowingOnSignup(signedupUser)async{
+    await firestore.collection('users').doc(signedupUser)
+    .collection('following').doc(signedupUser).set({'userid' : signedupUser});
+  }  
+
+  //update searched user's follower
+  addInSearchedUserFollowers(searchedUser)async{
+    await firestore.collection('users').doc(searchedUser)
+    .collection('followers').doc(Constant.userID).set({'userid': Constant.userID});
+  }
+
+  //update current user's following
+  addInCurrentUserFollowing(searchedUser)async{
+    await firestore.collection('users').doc(Constant.userID)
+    .collection('following').doc(searchedUser).set({'userid' : searchedUser});
+  }
+
+  removeFromSearchedUserFollowers(searchedUser)async{
+    await firestore.collection('users').doc(searchedUser)
+    .collection('followers').doc(Constant.userID).delete();  
+  }
+
+  removeFromCurrentUserFollowing(searchedUser)async{
+    await firestore.collection('users').doc(Constant.userID)
+    .collection('following').doc(searchedUser).delete();  
+  }  
+
+  //method to verify if a user exists in the followings of signin user
+  getUserFollowing(searchedUser)async{
+    try{
+      return await firestore.collection('users').doc(Constant.userID)
+      .collection('following').doc(searchedUser).get();
+    }catch(e){
+      print(e.toString());
+      // return 'error occured';
+    }
   }
 
   getPostDetails() async{

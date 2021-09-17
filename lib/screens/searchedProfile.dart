@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/providers/database.dart';
 import 'package:instagram_clone/screens/editProfile.dart';
 import 'package:instagram_clone/utilities/config.dart';
+import 'package:instagram_clone/utilities/constant.dart';
 import 'package:instagram_clone/widgets/feedTile.dart';
 
 class SearchedProfile extends StatefulWidget {
@@ -23,35 +24,89 @@ class SearchedProfileState extends State<SearchedProfile> {
   // bool isProfileDataLoaded = false;
   bool isGridView = true;
   DatabaseFunctions databaseFunctions = new DatabaseFunctions();
-
+  String? searchedUserId;
+  bool isCurrentUserFollowingSearchedUser = false;
+  bool isFollowButtonLoading = false;
 
   @override
   void initState(){
-    fetchSearchedUserPost();
     super.initState();
+    searchedUserId = widget.searchSnapshot!.docs[widget.searchedIndexList as int]['userid'];
+    // print(searchedUserId);
+    fetchSearchedUserPost();
+    checkCurrentUserFollowing();
   }
 
   fetchSearchedUserPost() async{
-    await databaseFunctions.getPostsOfSearchedUser(widget.searchSnapshot!.docs[widget.searchedIndexList as int]['userid'])
+    await databaseFunctions.getPostsOfSearchedUser(searchedUserId as String)
     .then((val){
       setState(() {
         profilepostStream = val;
       });
     });
-    print(profilepostStream);
+    // print(profilepostStream);
+  }
+
+  //adding signedin user in the searched user's followers and searched user in the signedin user's following
+  followSearchedUser() async{
+    setState(() {
+      isFollowButtonLoading  = true;
+    });
+    await databaseFunctions.addInSearchedUserFollowers(searchedUserId);
+    await databaseFunctions.addInCurrentUserFollowing(searchedUserId);
+    setState(() {
+      isCurrentUserFollowingSearchedUser = true;
+      isFollowButtonLoading = false;
+    });
+  }
+
+  //removing signedin user from the searched user's followers and searched user in the signedin user's following
+  unfollowSearchedUser()async{
+    setState(() {
+      isFollowButtonLoading = true;
+    });
+    await databaseFunctions.removeFromSearchedUserFollowers(searchedUserId);
+    await databaseFunctions.removeFromCurrentUserFollowing(searchedUserId);
+    setState(() {
+      isCurrentUserFollowingSearchedUser = false;
+      isFollowButtonLoading = false;
+    });
+  }
+
+  //I spent alot of time to make this logical error work but I wasn't able to debug it
+  //next day when i sat to work on this something clicked to me, i tried and it worked!
+  //PS: If you are getting frustrated debugging something and not able to find the solution,
+  //stop there and try later, maybe you are just too busy thinking that it needs a complicated logic
+  //and you cannot see a simple solution right infront of you to make it work 
+  //and later when your mind will be relaxed you will be able to grab that simple logic.
+
+  //checking if the signed in user is following the searched user
+  checkCurrentUserFollowing() async{
+    await databaseFunctions.getUserFollowing(searchedUserId)
+    .then((val){
+      if(val.exists && val.get('userid') == searchedUserId){
+        setState(() {
+          isCurrentUserFollowingSearchedUser = true;
+        });
+      }else{
+        setState(() {
+          isCurrentUserFollowingSearchedUser = false;
+        });
+      }
+    });
   }
 
   Widget profileGrid(){
     return StreamBuilder(
       stream: profilepostStream,
       builder: (context, AsyncSnapshot snapshot){
-        print(snapshot.data.docs.length);
+        // print(snapshot.data.docs.length);
         if(snapshot.data == null){
           return CircularProgressIndicator();
         }else{
         if(snapshot.hasData && snapshot.data.docs.length != 0){
           arePhotosPresent = true;
-          print(arePhotosPresent);
+          // print(arePhotosPresent);
           return isGridView ?
             Flexible(
               child: GridView.builder(
@@ -150,13 +205,29 @@ class SearchedProfileState extends State<SearchedProfile> {
             ),
           ) :
           Text(''),
+          //if currentuserfollowing searched user unfollow button will be displaced if button clicked
+          //in any case circulareprogressindicator will be displayed
+          isCurrentUserFollowingSearchedUser ? 
+          (!isFollowButtonLoading ?
+            GestureDetector(
+            onTap: ()async{
+              await unfollowSearchedUser();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 150, vertical: 10),
+              decoration: BoxDecoration(
+                border: Border.all(color: currentTheme.currentTheme == ThemeMode.dark ? Colors.white54 : Colors.black54),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text('Unfollow'),
+            ) 
+          ) :
+            CircularProgressIndicator()
+          ) :
+          (!isFollowButtonLoading ?
           GestureDetector(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context){
-                  return EditProfile();
-                }
-              ));
+            onTap: ()async{
+              await followSearchedUser();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 150, vertical: 10),
@@ -166,6 +237,8 @@ class SearchedProfileState extends State<SearchedProfile> {
               ),
               child: Text('Follow', style: TextStyle(color: Colors.white)),
             )
+          ) :
+          CircularProgressIndicator()
           ),
           SizedBox(height: 5,),
           // arePhotosPresent?

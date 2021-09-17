@@ -70,7 +70,7 @@ class _FeedTileState extends State<FeedTile> {
                           width: 40,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/images/myprofile.png')
+                              image: AssetImage('assets/images/userProfilePicPlaceHolder.png')
                             ),
                             shape: BoxShape.circle,
                             border: Border.all(color: themeTernaryOperator)
@@ -170,24 +170,24 @@ class _FeedTileState extends State<FeedTile> {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: (){},
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 12, bottom: 12),
-              child: GestureDetector(
-                onTap: (){},
-                child: Text(
-                  'View all 494 comments', 
-                  style: TextStyle(color: Colors.grey.shade600),
-                )
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: (){},
+          //   child: Container(
+          //     alignment: Alignment.centerLeft,
+          //     padding: EdgeInsets.only(left: 12, bottom: 12),
+          //     child: GestureDetector(
+          //       onTap: (){},
+          //       child: Text(
+          //         'View all 494 comments', 
+          //         style: TextStyle(color: Colors.grey.shade600),
+          //       )
+          //     ),
+          //   ),
+          // ),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 12, bottom: 12),
-            child: Text('5 hours ago', style: TextStyle(color: Colors.grey.shade600, fontSize: 10)),
+            child: Text('1 day ago', style: TextStyle(color: Colors.grey.shade600, fontSize: 10)),
           )
         ],
       ),

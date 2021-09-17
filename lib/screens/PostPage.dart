@@ -62,6 +62,7 @@ class _PostPageState extends State<PostPage> {
     }));
   }
 
+  //fetching user location
   fetchLocation() async{
     var myLocation;
     LocationData selectedLocation;

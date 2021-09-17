@@ -23,7 +23,7 @@ Widget stories() {
     child: Padding(
       padding : EdgeInsets.only(left: 10),
       child: ListView.builder(
-      itemCount: 10,
+      itemCount: 1,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, index){
         return Stack(

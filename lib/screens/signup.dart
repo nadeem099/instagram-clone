@@ -55,6 +55,8 @@ signupForNewUser() async{
       "usernameSearchParams" : createSearchParams(usernameEditingController.text)
     };
     db.uploadUser(userMap);
+    db.updateFollowingOnSignup(userid);
+    db.updateFollowerOnSignup(userid);
     authFunctions.signupUserWithEmailAndPassword(emailEditingController.text, passwordEditingController.text);
     SharedPreferenceFunctions.saveUserLoggedInSharedPreference(true);
     SharedPreferenceFunctions.saveUserNameSharedPreference(usernameEditingController.text);
