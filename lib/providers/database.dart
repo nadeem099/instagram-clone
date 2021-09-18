@@ -98,6 +98,32 @@ class DatabaseFunctions{
     .snapshots();
   }
 
+
+//getting following of user's from users/doc/following collection
+//then getting post of every user of following collection fomr post collection
+  // getPostsOfSignedinUserFollowing() async{
+  //   return await firestore.collection('users')
+  //   .doc(Constant.userID).collection('following').get()
+  //   .then((value) async{
+  //     value.docs.forEach((element)async{
+  //       // print(element.data()['userid']);
+  //       firestore.collection('posts')
+  //       .orderBy('timeStamp', descending: true)
+  //       .where('userId', isEqualTo: element.data()['userid'])
+  //       .snapshots().forEach((element) {
+  //         element.docs.forEach((element) {
+  //           print(element.data()['username']);
+  //         });
+  //       });
+  //     });
+  //   });
+  // }
+
+  getPostsOfSignedInUserFollowing() async{
+    return await firestore.collection('users')
+    .doc(Constant.userID).collection('following').get();
+  }
+
   updateUserProfileInfo(data) async{
     await firestore.collection('users')
     .doc(Constant.userID).update(data);
